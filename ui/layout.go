@@ -5,21 +5,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-func buildHeader() {
-
-}
-
-func (a *App) buildUI() {
-	a.mainGrid = tview.NewGrid().
-		SetRows(1, 4, 1, 0).
-		SetColumns(0).
-		SetBorders(true)
-
-	title := tview.NewTextView().
-		SetDynamicColors(true).
-		SetText("Reverse Shell Generator").
-		SetTextAlign(tview.AlignCenter)
-
+func (a *App) buildHeader() tview.Primitive {
 	headerGrid := tview.NewGrid().
 		SetRows(0).
 		SetColumns(0, 4, 0)
@@ -28,7 +14,7 @@ func (a *App) buildUI() {
 		SetLabel("IP: ").
 		SetText("10.10.10.10")
 
-	portField := tview.NewInputField().
+	a.portField = tview.NewInputField().
 		SetLabel("Port: ").
 		SetText("9001")
 
@@ -39,15 +25,11 @@ func (a *App) buildUI() {
 		AddItem(tview.NewFlex().
 			AddItem(ipField, 0, 4, true).
 			AddItem(Spacer(), 0, 1, false).
-			AddItem(portField, 0, 4, true), 0, 1, true)
+			AddItem(a.portField, 0, 4, true), 0, 1, true)
 
-	listenerCommand := tview.NewTextView().
-		SetText("nc -lvnp " + portField.GetText()).
+	a.listenerCommand = tview.NewTextView().
+		SetText("nc -lvnp " + a.portField.GetText()).
 		SetTextAlign(tview.AlignCenter)
-
-	portField.SetChangedFunc(func(text string) {
-		listenerCommand.SetText("nc -lvnp " + text)
-	})
 
 	listenerTypeDropdown := tview.NewDropDown().
 		SetLabel("Type: ").
@@ -68,7 +50,7 @@ func (a *App) buildUI() {
 		AddItem(tview.NewTextView().SetText("Listener"), 0, 1, false).
 		SetDirection(tview.FlexRow).
 		AddItem(Spacer(), 0, 1, false).
-		AddItem(listenerCommand, 0, 1, false).
+		AddItem(a.listenerCommand, 0, 1, false).
 		AddItem(tview.NewFlex().
 			AddItem(listenerTypeDropdown, 0, 3, true).
 			AddItem(listenerCopyButton, 0, 1, true), 0, 1, true)
@@ -77,8 +59,24 @@ func (a *App) buildUI() {
 		AddItem(Spacer(), 0, 1, 1, 1, 0, 0, false).
 		AddItem(listenerFlex, 0, 2, 1, 1, 0, 0, true)
 
+	return headerGrid
+}
+
+func (a *App) buildUI() {
+	a.mainGrid = tview.NewGrid().
+		SetRows(1, 4, 1, 0).
+		SetColumns(0).
+		SetBorders(true)
+
+	title := tview.NewTextView().
+		SetDynamicColors(true).
+		SetText("Reverse Shell Generator").
+		SetTextAlign(tview.AlignCenter)
+
+	header := a.buildHeader()
+
 	a.mainGrid.AddItem(title, 0, 0, 1, 1, 0, 0, false).
-		AddItem(headerGrid, 1, 0, 1, 1, 0, 0, true)
+		AddItem(header, 1, 0, 1, 1, 0, 0, true)
 
 	a.app.SetRoot(a.mainGrid, true)
 }

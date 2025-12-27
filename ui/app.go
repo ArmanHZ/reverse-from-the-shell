@@ -9,10 +9,11 @@ type App struct {
 	mainGrid *tview.Grid
 
 	// Header widgets
-	ipField    *tview.InputField
-	portField  *tview.InputField
-	typeSelect *tview.DropDown
-	cmdView    *tview.TextView
+	ipField            *tview.InputField
+	portField          *tview.InputField
+	listenerCommand    *tview.TextView
+	listenerTypeSelect *tview.DropDown
+	listenerCopyButton *tview.Button
 }
 
 func New() *App {
@@ -21,7 +22,7 @@ func New() *App {
 	}
 
 	a.buildUI()
-	// a.bindEvents()
+	a.bindEvents()
 
 	return a
 }
