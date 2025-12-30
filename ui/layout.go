@@ -10,7 +10,7 @@ func (a *App) buildHeader() tview.Primitive {
 		SetRows(0).
 		SetColumns(0, 4, 0)
 
-	ipField := tview.NewInputField().
+	a.ipField = tview.NewInputField().
 		SetLabel("IP: ").
 		SetText("10.10.10.10")
 
@@ -23,7 +23,7 @@ func (a *App) buildHeader() tview.Primitive {
 		SetDirection(tview.FlexRow).
 		AddItem(Spacer(), 0, 1, false).
 		AddItem(tview.NewFlex().
-			AddItem(ipField, 0, 4, true).
+			AddItem(a.ipField, 0, 4, true).
 			AddItem(Spacer(), 0, 1, false).
 			AddItem(a.portField, 0, 4, true), 0, 1, true)
 
@@ -31,14 +31,10 @@ func (a *App) buildHeader() tview.Primitive {
 		SetText("nc -lvnp " + a.portField.GetText()).
 		SetTextAlign(tview.AlignCenter)
 
-	listenerTypeDropdown := tview.NewDropDown().
-		SetLabel("Type: ").
-		SetOptions([]string{"nc", "test1"}, func(t string, i int) {
-			// TODO: From the data stuff that I'll import later, -
-			// according to the index, get the correct payload and -
-			// set the `listenerCommand`'s text.
-		})
+	a.listenerTypeSelect = tview.NewDropDown().
+		SetLabel("Type: ")
 
+	// TODO: Move to events when fully implementing.
 	listenerCopyButton := tview.NewButton("Copy").
 		SetSelectedFunc(func() {
 			// TODO: Probably do something like `xclip -selection clipboard`
@@ -52,7 +48,7 @@ func (a *App) buildHeader() tview.Primitive {
 		AddItem(Spacer(), 0, 1, false).
 		AddItem(a.listenerCommand, 0, 1, false).
 		AddItem(tview.NewFlex().
-			AddItem(listenerTypeDropdown, 0, 3, true).
+			AddItem(a.listenerTypeSelect, 0, 3, true).
 			AddItem(listenerCopyButton, 0, 1, true), 0, 1, true)
 
 	headerGrid.AddItem(ipPortFlex, 0, 0, 1, 1, 0, 0, true).

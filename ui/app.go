@@ -12,7 +12,7 @@ type App struct {
 	ipField            *tview.InputField
 	portField          *tview.InputField
 	listenerCommand    *tview.TextView
-	listenerTypeSelect *tview.DropDown
+	listenerTypeSelect *tview.DropDown // FIXME: I don't like this name.
 	listenerCopyButton *tview.Button
 
 	// Tab buttons
@@ -33,5 +33,5 @@ func New() *App {
 }
 
 func (a *App) Run() error {
-	return a.app.Run()
+	return a.app.SetFocus(a.listenerTypeSelect).Run()
 }
