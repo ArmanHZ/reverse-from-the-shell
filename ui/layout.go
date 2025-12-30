@@ -62,6 +62,24 @@ func (a *App) buildHeader() tview.Primitive {
 	return headerGrid
 }
 
+func (a *App) buildTabs() *tview.Flex {
+	reverseTab := tview.NewButton("Reverse")
+	bindTab := tview.NewButton("Bind")
+	msfvenomTab := tview.NewButton("MSFVenom")
+	hoaxTab := tview.NewButton("HoaxShell")
+
+	tabsFlex := tview.NewFlex().
+		AddItem(reverseTab, 0, 1, true).
+		AddItem(Spacer(), 1, 1, false).
+		AddItem(bindTab, 0, 1, true).
+		AddItem(Spacer(), 1, 1, false).
+		AddItem(msfvenomTab, 0, 1, true).
+		AddItem(Spacer(), 1, 1, false).
+		AddItem(hoaxTab, 0, 1, true)
+
+	return tabsFlex
+}
+
 func (a *App) buildUI() {
 	a.mainGrid = tview.NewGrid().
 		SetRows(1, 4, 1, 0).
@@ -74,9 +92,11 @@ func (a *App) buildUI() {
 		SetTextAlign(tview.AlignCenter)
 
 	header := a.buildHeader()
+	tabs := a.buildTabs()
 
 	a.mainGrid.AddItem(title, 0, 0, 1, 1, 0, 0, false).
-		AddItem(header, 1, 0, 1, 1, 0, 0, true)
+		AddItem(header, 1, 0, 1, 1, 0, 0, true).
+		AddItem(tabs, 2, 0, 1, 1, 0, 0, true)
 
 	a.app.SetRoot(a.mainGrid, true)
 }

@@ -1,9 +1,6 @@
 package main
 
 import (
-	// "fmt"
-	// "os/exec"
-
 	"rvfs/ui"
 )
 
