@@ -19,9 +19,9 @@ func (a *App) buildHeader() tview.Primitive {
 		SetText("9001")
 
 	ipPortFlex := tview.NewFlex().
-		AddItem(tview.NewTextView().SetText("IP & Port"), 0, 1, false).
+		AddItem(tview.NewTextView().SetText("IP & Port"), 1, 0, false).
 		SetDirection(tview.FlexRow).
-		AddItem(Spacer(), 0, 1, false).
+		AddItem(Spacer(), 1, 0, false).
 		AddItem(tview.NewFlex().
 			AddItem(a.ipField, 0, 4, true).
 			AddItem(Spacer(), 0, 1, false).
@@ -43,13 +43,13 @@ func (a *App) buildHeader() tview.Primitive {
 		})
 
 	listenerFlex := tview.NewFlex().
-		AddItem(tview.NewTextView().SetText("Listener"), 0, 1, false).
+		AddItem(tview.NewTextView().SetText("Listener"), 1, 0, false).
 		SetDirection(tview.FlexRow).
-		AddItem(Spacer(), 0, 1, false).
+		AddItem(Spacer(), 1, 0, false).
 		AddItem(a.listenerCommand, 0, 1, false).
 		AddItem(tview.NewFlex().
 			AddItem(a.listenerTypeSelect, 0, 3, true).
-			AddItem(listenerCopyButton, 0, 1, true), 0, 1, true)
+			AddItem(listenerCopyButton, 0, 1, true), 1, 0, true)
 
 	headerGrid.AddItem(ipPortFlex, 0, 0, 1, 1, 0, 0, true).
 		AddItem(Spacer(), 0, 1, 1, 1, 0, 0, false).
@@ -66,19 +66,20 @@ func (a *App) buildTabs() *tview.Flex {
 
 	tabsFlex := tview.NewFlex().
 		AddItem(reverseTab, 0, 1, true).
-		AddItem(Spacer(), 1, 1, false).
+		AddItem(Spacer(), 1, 0, false).
 		AddItem(bindTab, 0, 1, true).
-		AddItem(Spacer(), 1, 1, false).
+		AddItem(Spacer(), 1, 0, false).
 		AddItem(msfvenomTab, 0, 1, true).
-		AddItem(Spacer(), 1, 1, false).
-		AddItem(hoaxTab, 0, 1, true)
+		AddItem(Spacer(), 1, 0, false).
+		AddItem(hoaxTab, 0, 1, true).
+		AddItem(Spacer(), 0, 3, false)
 
 	return tabsFlex
 }
 
 func (a *App) buildUI() {
 	a.mainGrid = tview.NewGrid().
-		SetRows(1, 4, 1, 0).
+		SetRows(1, 8, 1, 0). // Value 8 for the second row seems to be a good value to fit the longest listener string.
 		SetColumns(0).
 		SetBorders(true)
 
@@ -92,7 +93,8 @@ func (a *App) buildUI() {
 
 	a.mainGrid.AddItem(title, 0, 0, 1, 1, 0, 0, false).
 		AddItem(header, 1, 0, 1, 1, 0, 0, true).
-		AddItem(tabs, 2, 0, 1, 1, 0, 0, true)
+		AddItem(tabs, 2, 0, 1, 1, 0, 0, true).
+		AddItem(Spacer(), 3, 0, 1, 1, 0, 0, false)
 
 	a.app.SetRoot(a.mainGrid, true)
 }
