@@ -64,6 +64,8 @@ func (a *App) buildTabs() *tview.Flex {
 	msfvenomTab := tview.NewButton("MSFVenom")
 	hoaxTab := tview.NewButton("HoaxShell")
 
+	a.tabButtons = append(a.tabButtons, reverseTab, bindTab, msfvenomTab, hoaxTab)
+
 	tabsFlex := tview.NewFlex().
 		AddItem(reverseTab, 0, 1, true).
 		AddItem(Spacer(), 1, 0, false).
@@ -77,9 +79,57 @@ func (a *App) buildTabs() *tview.Flex {
 	return tabsFlex
 }
 
+func (a *App) buildMainContent() *tview.Flex {
+	mainContentFlex := tview.NewFlex().SetDirection(tview.FlexRow)
+	tabs := a.buildTabs()
+
+	// T00d00: Refac these l8r
+	targetOsSelect := tview.NewDropDown().SetLabel("OS: ").
+		SetOptions([]string{"First", "Second", "Third", "Fourth", "Fifth"}, nil) // Dummdumm data for testing.
+	payloadSearchField := tview.NewInputField().SetLabel("Name: ")
+
+	mainContentControls := tview.NewFlex().
+		AddItem(targetOsSelect, 0, 1, true).
+		AddItem(Spacer(), 1, 0, false).
+		AddItem(payloadSearchField, 0, 4, true).
+		AddItem(Spacer(), 0, 5, false)
+
+	a.reverseShellSelect = tview.NewTable().
+		SetBorders(true).
+		SetSelectable(true, false)
+
+	// Dummy data
+	items := []string{
+		"First item",
+		"Second item",
+		"Third item",
+		"Fourth item",
+		"Fifth item",
+	}
+
+	for row, text := range items {
+		cell := tview.NewTableCell(text).
+			SetAlign(tview.AlignLeft)
+			// SetExpansion(1)
+
+		a.reverseShellSelect.SetCell(row, 0, cell)
+	}
+
+	mainContentData := tview.NewFlex().
+		AddItem(a.reverseShellSelect, 0, 1, true)
+
+	mainContentFlex.AddItem(tabs, 1, 0, true).
+		AddItem(Spacer(), 1, 0, false).
+		AddItem(mainContentControls, 1, 0, true).
+		AddItem(Spacer(), 1, 0, false).
+		AddItem(mainContentData, 0, 1, true)
+
+	return mainContentFlex
+}
+
 func (a *App) buildUI() {
 	a.mainGrid = tview.NewGrid().
-		SetRows(1, 8, 1, 0). // Value 8 for the second row seems to be a good value to fit the longest listener string.
+		SetRows(1, 8, 0). // Value 8 for the second row seems to be a good value to fit the longest listener string.
 		SetColumns(0).
 		SetBorders(true)
 
@@ -89,12 +139,14 @@ func (a *App) buildUI() {
 		SetTextAlign(tview.AlignCenter)
 
 	header := a.buildHeader()
-	tabs := a.buildTabs()
+	// tabs := a.buildTabs()
+	mainContent := a.buildMainContent()
 
 	a.mainGrid.AddItem(title, 0, 0, 1, 1, 0, 0, false).
 		AddItem(header, 1, 0, 1, 1, 0, 0, true).
-		AddItem(tabs, 2, 0, 1, 1, 0, 0, true).
-		AddItem(Spacer(), 3, 0, 1, 1, 0, 0, false)
+		AddItem(mainContent, 2, 0, 1, 1, 0, 0, true)
+		// AddItem(tabs, 2, 0, 1, 1, 0, 0, true).
+		// AddItem(Spacer(), 3, 0, 1, 1, 0, 0, false)
 
 	a.app.SetRoot(a.mainGrid, true)
 }
