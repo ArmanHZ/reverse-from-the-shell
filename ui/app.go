@@ -5,7 +5,10 @@ import "github.com/rivo/tview"
 type App struct {
 	app *tview.Application
 
-	// UI state
+	focusables []tview.Primitive
+	focusIndex int
+
+	// UI elements below this line
 	mainGrid *tview.Grid
 
 	// Header widgets
@@ -31,6 +34,7 @@ func New() *App {
 
 	a.buildUI()
 	a.bindEvents()
+	a.initInputCapture()
 
 	a.app.EnableMouse(true) // For testing different widgets. Might disable later or let it be.
 

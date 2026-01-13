@@ -13,10 +13,12 @@ func (a *App) buildHeader() tview.Primitive {
 	a.ipField = tview.NewInputField().
 		SetLabel("IP: ").
 		SetText("10.10.10.10")
+	a.registerFocusable(a.ipField)
 
 	a.portField = tview.NewInputField().
 		SetLabel("Port: ").
 		SetText("9001")
+	a.registerFocusable(a.portField)
 
 	ipPortFlex := tview.NewFlex().
 		AddItem(tview.NewTextView().SetText("IP & Port"), 1, 0, false).
@@ -33,6 +35,7 @@ func (a *App) buildHeader() tview.Primitive {
 
 	a.listenerTypeSelect = tview.NewDropDown().
 		SetLabel("Type: ")
+	a.registerFocusable(a.listenerTypeSelect)
 
 	// TODO: Move to events when fully implementing.
 	listenerCopyButton := tview.NewButton("Copy").
@@ -41,6 +44,7 @@ func (a *App) buildHeader() tview.Primitive {
 			// out, _ := exec.Command("").Output()
 			// fmt.Printf("%s", out)
 		})
+	a.registerFocusable(listenerCopyButton) // TODO: Need to make the button global as well.
 
 	listenerFlex := tview.NewFlex().
 		AddItem(tview.NewTextView().SetText("Listener"), 1, 0, false).
@@ -66,6 +70,10 @@ func (a *App) buildTabs() *tview.Flex {
 
 	a.tabButtons = append(a.tabButtons, reverseTab, bindTab, msfvenomTab, hoaxTab)
 
+	for _, v := range a.tabButtons {
+		a.registerFocusable(v)
+	}
+
 	tabsFlex := tview.NewFlex().
 		AddItem(reverseTab, 0, 1, true).
 		AddItem(Spacer(), 1, 0, false).
@@ -86,7 +94,10 @@ func (a *App) buildMainContent() *tview.Flex {
 	// T00d00: Refac these l8r
 	targetOsSelect := tview.NewDropDown().SetLabel("OS: ").
 		SetOptions([]string{"First", "Second", "Third", "Fourth", "Fifth"}, nil) // Dummdumm data for testing.
+	a.registerFocusable(targetOsSelect) // TODO: Make this global
+
 	payloadSearchField := tview.NewInputField().SetLabel("Name: ")
+	a.registerFocusable(payloadSearchField) // TODO: Make this global
 
 	mainContentControls := tview.NewFlex().
 		AddItem(targetOsSelect, 0, 1, true).
@@ -97,6 +108,7 @@ func (a *App) buildMainContent() *tview.Flex {
 	a.reverseShellSelect = tview.NewTable().
 		SetBorders(true).
 		SetSelectable(true, false)
+	a.registerFocusable(a.reverseShellSelect)
 
 	// Dummy data
 	items := []string{
@@ -139,14 +151,11 @@ func (a *App) buildUI() {
 		SetTextAlign(tview.AlignCenter)
 
 	header := a.buildHeader()
-	// tabs := a.buildTabs()
 	mainContent := a.buildMainContent()
 
 	a.mainGrid.AddItem(title, 0, 0, 1, 1, 0, 0, false).
 		AddItem(header, 1, 0, 1, 1, 0, 0, true).
 		AddItem(mainContent, 2, 0, 1, 1, 0, 0, true)
-		// AddItem(tabs, 2, 0, 1, 1, 0, 0, true).
-		// AddItem(Spacer(), 3, 0, 1, 1, 0, 0, false)
 
 	a.app.SetRoot(a.mainGrid, true)
 }

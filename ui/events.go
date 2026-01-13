@@ -4,7 +4,31 @@ import (
 	"bytes"
 	"html/template"
 	"rvfs/data"
+
+	"github.com/gdamore/tcell/v2"
 )
+
+func (a *App) focusNext() {
+	if len(a.focusables) == 0 {
+		return
+	}
+
+	a.focusIndex = (a.focusIndex + 1) % len(a.focusables)
+	a.app.SetFocus(a.focusables[a.focusIndex])
+}
+
+// TODO: Maybe a better name
+func (a *App) initInputCapture() {
+	a.app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		switch event.Key() {
+		case tcell.KeyTab:
+			a.focusNext()
+			return nil
+		}
+
+		return event
+	})
+}
 
 // TODO: Split each component's events to their own respective functions.
 func (a *App) bindEvents() {
