@@ -17,12 +17,30 @@ func (a *App) focusNext() {
 	a.app.SetFocus(a.focusables[a.focusIndex])
 }
 
+func (a *App) focusPrev() {
+	if len(a.focusables) == 0 {
+		return
+	}
+
+	a.focusIndex--
+	if a.focusIndex < 0 {
+		a.focusIndex = len(a.focusables) - 1
+	}
+
+	a.app.SetFocus(a.focusables[a.focusIndex])
+}
+
 // TODO: Maybe a better name
 func (a *App) initInputCapture() {
 	a.app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch event.Key() {
+
 		case tcell.KeyTab:
 			a.focusNext()
+			return nil
+
+		case tcell.KeyBacktab:
+			a.focusPrev()
 			return nil
 		}
 
