@@ -19,6 +19,7 @@ type App struct {
 	listenerCopyButton *tview.Button
 
 	// Main content widgets
+	targetOsTypeSelect *tview.DropDown
 	reverseShellSelect *tview.Table
 
 	// Tab buttons
@@ -36,6 +37,9 @@ func New() *App {
 	a.bindEvents()
 	a.initInputCapture()
 
+	a.app.SetFocus(a.focusables[0])
+
+	// FIXME: This messes up with the tab movement.
 	a.app.EnableMouse(true) // For testing different widgets. Might disable later or let it be.
 
 	return a

@@ -1,7 +1,6 @@
 package ui
 
 import (
-	// "github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
@@ -30,7 +29,6 @@ func (a *App) buildHeader() tview.Primitive {
 			AddItem(a.portField, 0, 4, true), 0, 1, true)
 
 	a.listenerCommand = tview.NewTextView().
-		SetText("nc -lvnp " + a.portField.GetText()).
 		SetTextAlign(tview.AlignCenter)
 
 	a.listenerTypeSelect = tview.NewDropDown().
@@ -92,15 +90,14 @@ func (a *App) buildMainContent() *tview.Flex {
 	tabs := a.buildTabs()
 
 	// T00d00: Refac these l8r
-	targetOsSelect := tview.NewDropDown().SetLabel("OS: ").
-		SetOptions([]string{"First", "Second", "Third", "Fourth", "Fifth"}, nil) // Dummdumm data for testing.
-	a.registerFocusable(targetOsSelect) // TODO: Make this global
+	a.targetOsTypeSelect = tview.NewDropDown().SetLabel("OS: ")
+	a.registerFocusable(a.targetOsTypeSelect)
 
 	payloadSearchField := tview.NewInputField().SetLabel("Name: ")
 	a.registerFocusable(payloadSearchField) // TODO: Make this global
 
 	mainContentControls := tview.NewFlex().
-		AddItem(targetOsSelect, 0, 1, true).
+		AddItem(a.targetOsTypeSelect, 0, 1, true).
 		AddItem(Spacer(), 1, 0, false).
 		AddItem(payloadSearchField, 0, 4, true).
 		AddItem(Spacer(), 0, 5, false)

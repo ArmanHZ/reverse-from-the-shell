@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"rvfs/data"
+	"strings"
 
 	"github.com/gdamore/tcell/v2"
 )
@@ -51,7 +52,13 @@ func (a *App) initInputCapture() {
 // TODO: Split each component's events to their own respective functions.
 func (a *App) bindEvents() {
 	a.portField.SetChangedFunc(func(text string) {
-		a.listenerCommand.SetText("nc -lvnp " + text)
+		// FIXME: Clean this up and rename the variables.
+		tmp := strings.Fields(a.listenerCommand.GetText(true))
+		var tmp2 string
+		if len(a.portField.GetText()) > 0 {
+			tmp2 = strings.Join(tmp[:len(tmp)-1], " ")
+			a.listenerCommand.SetText(tmp2 + " " + text)
+		}
 	})
 
 	var dropDownOptions []string
@@ -69,5 +76,9 @@ func (a *App) bindEvents() {
 		tmpl.Execute(&buf, map[string]string{"Port": a.portField.GetText(), "Ip": a.ipField.GetText()})
 
 		a.listenerCommand.SetText(buf.String())
-	})
+	}).
+		SetCurrentOption(0)
+
+	a.targetOsTypeSelect.SetOptions(data.OSTypes, nil).
+		SetCurrentOption(0)
 }
