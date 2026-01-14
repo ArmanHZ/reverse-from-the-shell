@@ -19,8 +19,9 @@ type App struct {
 	listenerCopyButton *tview.Button
 
 	// Main content widgets
-	targetOsTypeSelect *tview.DropDown
-	reverseShellSelect *tview.Table
+	targetOsTypeSelect         *tview.DropDown
+	reverseShellSelect         *tview.Table
+	reverseShellCommandDisplay *tview.TextView
 
 	// Tab buttons
 	// TODO: Maybe do something like an enum

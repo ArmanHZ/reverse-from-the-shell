@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gdamore/tcell/v2"
+	"github.com/rivo/tview"
 )
 
 func (a *App) focusNext() {
@@ -81,4 +82,18 @@ func (a *App) bindEvents() {
 
 	a.targetOsTypeSelect.SetOptions(data.OSTypes, nil).
 		SetCurrentOption(0)
+
+	// XXX: Should I do this part in this file? Who knows...
+	for row, text := range data.ReverseShellCommands {
+		cell := tview.NewTableCell(text.Name).
+			SetAlign(tview.AlignLeft)
+			// SetExpansion(1)
+
+		a.reverseShellSelect.SetCell(row, 0, cell)
+	}
+
+	a.reverseShellSelect.SetSelectionChangedFunc(func(row, column int) {
+		tmp := data.ReverseShellCommands[row].Command
+		a.reverseShellCommandDisplay.SetText(tmp)
+	})
 }

@@ -89,7 +89,6 @@ func (a *App) buildMainContent() *tview.Flex {
 	mainContentFlex := tview.NewFlex().SetDirection(tview.FlexRow)
 	tabs := a.buildTabs()
 
-	// T00d00: Refac these l8r
 	a.targetOsTypeSelect = tview.NewDropDown().SetLabel("OS: ")
 	a.registerFocusable(a.targetOsTypeSelect)
 
@@ -107,25 +106,11 @@ func (a *App) buildMainContent() *tview.Flex {
 		SetSelectable(true, false)
 	a.registerFocusable(a.reverseShellSelect)
 
-	// Dummy data
-	items := []string{
-		"First item",
-		"Second item",
-		"Third item",
-		"Fourth item",
-		"Fifth item",
-	}
-
-	for row, text := range items {
-		cell := tview.NewTableCell(text).
-			SetAlign(tview.AlignLeft)
-			// SetExpansion(1)
-
-		a.reverseShellSelect.SetCell(row, 0, cell)
-	}
+	a.reverseShellCommandDisplay = tview.NewTextView()
 
 	mainContentData := tview.NewFlex().
-		AddItem(a.reverseShellSelect, 0, 1, true)
+		AddItem(a.reverseShellSelect, 0, 1, true).
+		AddItem(a.reverseShellCommandDisplay, 0, 4, false)
 
 	mainContentFlex.AddItem(tabs, 1, 0, true).
 		AddItem(Spacer(), 1, 0, false).
