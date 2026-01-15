@@ -11,7 +11,7 @@ func (a *App) buildHeader() tview.Primitive {
 
 	a.ipField = tview.NewInputField().
 		SetLabel("IP: ").
-		SetText("10.10.10.10")
+		SetPlaceholder("10.10.10.10")
 	a.registerFocusable(a.ipField)
 
 	a.portField = tview.NewInputField().
