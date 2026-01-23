@@ -92,7 +92,6 @@ func (a *App) initReverseShellTableEvents() {
 	for row, text := range data.ReverseShellCommands {
 		cell := tview.NewTableCell(text.Name).
 			SetAlign(tview.AlignLeft)
-			// SetExpansion(1)
 
 		a.reverseShellSelect.SetCell(row, 0, cell)
 	}
@@ -101,6 +100,8 @@ func (a *App) initReverseShellTableEvents() {
 		tmp := data.ReverseShellCommands[row].Command
 		a.reverseShellCommandDisplay.SetText(tmp)
 	})
+
+	a.reverseShellSelect.Select(0, 0)
 }
 
 // TODO: Maybe better names?
