@@ -50,8 +50,7 @@ func (a *App) initInputCapture() {
 	})
 }
 
-// TODO: Split each component's events to their own respective functions.
-func (a *App) bindEvents() {
+func (a *App) initPortFieldEvents() {
 	a.portField.SetChangedFunc(func(text string) {
 		// FIXME: Clean this up and rename the variables.
 		tmp := strings.Fields(a.listenerCommand.GetText(true))
@@ -61,7 +60,9 @@ func (a *App) bindEvents() {
 			a.listenerCommand.SetText(tmp2 + " " + text)
 		}
 	})
+}
 
+func (a *App) initListenerTypeSelectEvents() {
 	var dropDownOptions []string
 	for _, v := range data.Listeners {
 		dropDownOptions = append(dropDownOptions, v.Name)
@@ -79,10 +80,14 @@ func (a *App) bindEvents() {
 		a.listenerCommand.SetText(buf.String())
 	}).
 		SetCurrentOption(0)
+}
 
+func (a *App) initTargetOsTypeSelectEvents() {
 	a.targetOsTypeSelect.SetOptions(data.OSTypes, nil).
 		SetCurrentOption(0)
+}
 
+func (a *App) initReverseShellTableEvents() {
 	// XXX: Should I do this part in this file? Who knows...
 	for row, text := range data.ReverseShellCommands {
 		cell := tview.NewTableCell(text.Name).
@@ -96,4 +101,12 @@ func (a *App) bindEvents() {
 		tmp := data.ReverseShellCommands[row].Command
 		a.reverseShellCommandDisplay.SetText(tmp)
 	})
+}
+
+// TODO: Maybe better names?
+func (a *App) bindEvents() {
+	a.initInputCapture()
+	a.initListenerTypeSelectEvents()
+	a.initTargetOsTypeSelectEvents()
+	a.initReverseShellTableEvents()
 }
