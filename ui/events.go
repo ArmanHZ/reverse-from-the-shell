@@ -51,6 +51,7 @@ func (a *App) initInputCapture() {
 	})
 }
 
+// FIXME: Table content also needs to change.
 func (a *App) initPortFieldEvents() {
 	a.portField.SetChangedFunc(func(text string) {
 		// FIXME: Clean this up and rename the variables.
@@ -88,6 +89,8 @@ func (a *App) initTargetOsTypeSelectEvents() {
 		SetCurrentOption(0)
 }
 
+// FIXME: When the user changes IP and/or Port, the change does not reflect
+// onto the table until you interract with the table again.
 func (a *App) initReverseShellTableEvents() {
 	// XXX: Should I do this part in this file? Who knows...
 	for row, text := range data.ReverseShellCommands {
@@ -102,7 +105,16 @@ func (a *App) initReverseShellTableEvents() {
 
 		sDec, _ := base64.StdEncoding.DecodeString(tmp)
 
-		a.reverseShellCommandDisplay.SetText(string(sDec))
+		tmpl, err := template.New("").Parse(string(sDec))
+		if err != nil {
+			panic(err)
+		}
+
+		var buf bytes.Buffer
+		// TODO: I put bash here temporarily.
+		tmpl.Execute(&buf, map[string]string{"Shell": "bash", "Port": a.portField.GetText(), "Ip": a.ipField.GetText()})
+
+		a.reverseShellCommandDisplay.SetText(buf.String())
 	})
 
 	a.reverseShellSelect.Select(0, 0)
@@ -111,6 +123,7 @@ func (a *App) initReverseShellTableEvents() {
 // TODO: Maybe better names?
 func (a *App) bindEvents() {
 	a.initInputCapture()
+	a.initPortFieldEvents()
 	a.initListenerTypeSelectEvents()
 	a.initTargetOsTypeSelectEvents()
 	a.initReverseShellTableEvents()
