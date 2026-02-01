@@ -2,6 +2,7 @@ package ui
 
 import (
 	"bytes"
+	"encoding/base64"
 	"html/template"
 	"rvfs/data"
 	"strings"
@@ -98,7 +99,10 @@ func (a *App) initReverseShellTableEvents() {
 
 	a.reverseShellSelect.SetSelectionChangedFunc(func(row, column int) {
 		tmp := data.ReverseShellCommands[row].Command
-		a.reverseShellCommandDisplay.SetText(tmp)
+
+		sDec, _ := base64.StdEncoding.DecodeString(tmp)
+
+		a.reverseShellCommandDisplay.SetText(string(sDec))
 	})
 
 	a.reverseShellSelect.Select(0, 0)
