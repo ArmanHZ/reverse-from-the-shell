@@ -2,6 +2,7 @@ package ui
 
 import (
 	"rvfs/data"
+	"unicode"
 
 	"github.com/rivo/tview"
 )
@@ -14,13 +15,22 @@ func (a *App) buildHeader() tview.Primitive {
 	// TODO: Later have the option to get this from cmdline and use placeholder.
 	a.ipField = tview.NewInputField().
 		SetLabel("IP: ").
-		SetText("10.10.10.10")
+		SetText("10.10.10.10").
+		// Temporary solution for letters. Will use regex later.
+		SetAcceptanceFunc(func(textToCheck string, lastChar rune) bool {
+			if unicode.IsDigit(lastChar) || unicode.IsPunct(lastChar) {
+				return true
+			}
+
+			return false
+		})
 		// SetPlaceholder("10.10.10.10")
 	a.registerFocusable(a.ipField)
 
 	a.portField = tview.NewInputField().
 		SetLabel("Port: ").
-		SetText("9001")
+		SetText("9001").
+		SetAcceptanceFunc(tview.InputFieldInteger)
 	a.registerFocusable(a.portField)
 
 	ipPortFlex := tview.NewFlex().
@@ -39,14 +49,8 @@ func (a *App) buildHeader() tview.Primitive {
 		SetLabel("Type: ")
 	a.registerFocusable(a.listenerTypeSelect)
 
-	// TODO: Move to events when fully implementing.
-	listenerCopyButton := tview.NewButton("Copy").
-		SetSelectedFunc(func() {
-			// TODO: Probably do something like `xclip -selection clipboard`
-			// out, _ := exec.Command("").Output()
-			// fmt.Printf("%s", out)
-		})
-	a.registerFocusable(listenerCopyButton) // TODO: Need to make the button global as well.
+	a.listenerCopyButton = tview.NewButton("Copy")
+	a.registerFocusable(a.listenerCopyButton) // TODO: Need to make the button global as well.
 
 	listenerFlex := tview.NewFlex().
 		AddItem(tview.NewTextView().SetText("Listener"), 1, 0, false).
@@ -55,7 +59,7 @@ func (a *App) buildHeader() tview.Primitive {
 		AddItem(a.listenerCommand, 0, 1, false).
 		AddItem(tview.NewFlex().
 			AddItem(a.listenerTypeSelect, 0, 3, true).
-			AddItem(listenerCopyButton, 0, 1, true), 1, 0, true)
+			AddItem(a.listenerCopyButton, 0, 1, true), 1, 0, true)
 
 	headerGrid.AddItem(ipPortFlex, 0, 0, 1, 1, 0, 0, true).
 		AddItem(Spacer(), 0, 1, 1, 1, 0, 0, false).
@@ -98,7 +102,9 @@ func (a *App) buildMainContent() *tview.Flex {
 	a.registerFocusable(a.targetOsTypeSelect)
 
 	payloadSearchField := tview.NewInputField().SetLabel("Name: ")
-	a.registerFocusable(payloadSearchField) // TODO: Make this global
+	payloadSearchField.SetPlaceholder("Will be implemented later...")
+	// TODO: Will implement later.
+	// a.registerFocusable(payloadSearchField)
 
 	mainContentControls := tview.NewFlex().
 		AddItem(a.targetOsTypeSelect, 0, 1, true).
@@ -117,28 +123,24 @@ func (a *App) buildMainContent() *tview.Flex {
 		SetRows(0).
 		SetColumns(25, 0)
 
-	// TODO: Refactor this part.
-	shellSelect := tview.NewDropDown().
+	a.shellPayloadSelect = tview.NewDropDown().
 		SetLabel("Shell: ").
 		SetOptions(data.ShellTypes, nil).
 		SetCurrentOption(2) // Bash by default
-	a.registerFocusable(shellSelect)
+	a.registerFocusable(a.shellPayloadSelect)
 
 	encodingSelect := tview.NewDropDown().
 		SetLabel("Encoding: ").
 		SetOptions([]string{"Will implement l8r"}, nil).
 		SetCurrentOption(0)
 
-	payloadCopyButton := tview.NewButton("Copy").
-		SetSelectedFunc(func() {
-			// TODO: Implement copy to clipboard.
-		})
-	a.registerFocusable(payloadCopyButton)
+	a.payloadCopyButton = tview.NewButton("Copy")
+	a.registerFocusable(a.payloadCopyButton)
 
 	shellPayloadDisplayOptions := tview.NewFlex().
-		AddItem(shellSelect, 0, 1, true).
+		AddItem(a.shellPayloadSelect, 0, 1, true).
 		AddItem(encodingSelect, 0, 1, true).
-		AddItem(payloadCopyButton, 10, 0, true)
+		AddItem(a.payloadCopyButton, 10, 0, true)
 
 	shellPayloadDisplayGrid := tview.NewGrid().
 		SetRows(0, 1).

@@ -118,6 +118,26 @@ func (a *App) initReverseShellTableEvents() {
 	a.reverseShellSelect.Select(0, 0)
 }
 
+func (a *App) initShellPayloadSelectEvents() {
+	a.shellPayloadSelect.SetSelectedFunc(func(text string, index int) {
+		a.triggerGlobalUiUpdate()
+	})
+}
+
+func (a *App) initClipboardEvents() {
+	a.listenerCopyButton.SetSelectedFunc(func() {
+		a.CopyToClipBoard(0)
+	})
+
+	a.reverseShellSelect.SetSelectedFunc(func(row, column int) {
+		a.CopyToClipBoard(1)
+	})
+
+	a.payloadCopyButton.SetSelectedFunc(func() {
+		a.CopyToClipBoard(1)
+	})
+}
+
 // TODO: Maybe better names?
 func (a *App) bindEvents() {
 	a.initInputCapture()
@@ -126,4 +146,6 @@ func (a *App) bindEvents() {
 	a.initListenerTypeSelectEvents()
 	a.initTargetOsTypeSelectEvents()
 	a.initReverseShellTableEvents()
+	a.initShellPayloadSelectEvents()
+	a.initClipboardEvents()
 }

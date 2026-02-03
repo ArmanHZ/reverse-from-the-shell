@@ -12,7 +12,6 @@ func main() {
 	flag.Parse()
 
 	app := ui.New(isColorFix)
-
 	if err := app.Run(); err != nil {
 		panic(err)
 	}
