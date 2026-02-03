@@ -1,0 +1,42 @@
+* Reverse from the Shell (rvfs)
+This is a TUI implementation of [[https://github.com/0dayCTF/reverse-shell-generator][0dayCTF's]] reverse shell generator.
+
+* ⚠️ Attention ⚠️
+I made this repo public when ~rvfs~ reached the minimal working version status.
+
+As of now, some features from 0dayCTF's website are missing.
+
+These features are filtering of payloads and any other type of shell other than
+reverse shell. I will be implementing bind shell and the rest in the future.
+
+* Build and Run
+
+#+BEGIN_SRC bash
+# Build
+go build -o bin/ ./cmd/rvfs/
+
+# Run
+./bin/rvfs
+
+# If you encounter color related problems, try this
+./bin/rvfs -color-fix
+#+END_SRC
+
+* Usage
+- You can navigate (change focus) between the components using =tab= and =shift+tab=
+- Use =Enter= to interact with the buttons and dropdown menus
+- When focused on the payload table, you can go up and down using the arrow keys,
+or the =Vim= keys.
+
+#+CAPTION: Earliest working version of rvfs
+#+NAME: rvfs 0.1
+[[./img/rvfs-0.1.png]]
+
+* Current features
+- All listeners are available
+- All the reverse shell payloads (except P0wny Shell, which will be added later)) are available
+- ~rvfs~ utilizes [[https://github.com/golang-design/clipboard][design clipboard]],
+so you can use the =copy= buttons to copy the payloads to your clipboard
+    - If you press enter while your focus is on the shell table, it also copies
+    the payload to your clipboard
+
