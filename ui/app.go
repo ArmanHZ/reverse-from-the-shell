@@ -30,6 +30,9 @@ type App struct {
 	// TODO: Maybe do something like an enum
 	// tabs -> 0: Reverse, 1: Bind, 2: MSFVenom, 3: HoaxShell
 	tabButtons []*tview.Button
+
+	payloadTableRow    int
+	payloadTableColumn int // This is always 0 anyways. But prevents magic num.
 }
 
 /* Why is this done?

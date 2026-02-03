@@ -24,6 +24,25 @@ var OSTypes = []string{
 	"Mac",
 }
 
+var ShellTypes = []string{
+	"sh",
+	"/bin/sh",
+	"bash",
+	"/bin/bash",
+	"cmd",
+	"powershell",
+	"pwsh",
+	"ash",
+	"bsh",
+	"csh",
+	"ksh",
+	"zsh",
+	"pdksh",
+	"tcsh",
+	"mksh",
+	"dash",
+}
+
 var Listeners = []Listener{
 	{`nc`, `nc -lvnp {{.Port}}`},
 	{`nc freebsd`, `nc -lvn {{.Port}}`},

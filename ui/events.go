@@ -2,7 +2,6 @@ package ui
 
 import (
 	"bytes"
-	"encoding/base64"
 	"html/template"
 	"rvfs/data"
 	"strings"
@@ -51,6 +50,12 @@ func (a *App) initInputCapture() {
 	})
 }
 
+func (a *App) initIpFieldEvents() {
+	a.ipField.SetChangedFunc(func(text string) {
+		a.triggerGlobalUiUpdate()
+	})
+}
+
 // FIXME: Table content also needs to change.
 func (a *App) initPortFieldEvents() {
 	a.portField.SetChangedFunc(func(text string) {
@@ -61,6 +66,8 @@ func (a *App) initPortFieldEvents() {
 			tmp2 = strings.Join(tmp[:len(tmp)-1], " ")
 			a.listenerCommand.SetText(tmp2 + " " + text)
 		}
+
+		a.triggerGlobalUiUpdate()
 	})
 }
 
@@ -91,6 +98,7 @@ func (a *App) initTargetOsTypeSelectEvents() {
 
 // FIXME: When the user changes IP and/or Port, the change does not reflect
 // onto the table until you interract with the table again.
+// FIXME: This name disregards other payload types.
 func (a *App) initReverseShellTableEvents() {
 	// XXX: Should I do this part in this file? Who knows...
 	for row, text := range data.ReverseShellCommands {
@@ -101,20 +109,10 @@ func (a *App) initReverseShellTableEvents() {
 	}
 
 	a.reverseShellSelect.SetSelectionChangedFunc(func(row, column int) {
-		tmp := data.ReverseShellCommands[row].Command
+		a.payloadTableRow = row
+		a.payloadTableColumn = 0
 
-		sDec, _ := base64.StdEncoding.DecodeString(tmp)
-
-		tmpl, err := template.New("").Parse(string(sDec))
-		if err != nil {
-			panic(err)
-		}
-
-		var buf bytes.Buffer
-		// TODO: I put bash here temporarily.
-		tmpl.Execute(&buf, map[string]string{"Shell": "bash", "Port": a.portField.GetText(), "Ip": a.ipField.GetText()})
-
-		a.reverseShellCommandDisplay.SetText(buf.String())
+		a.triggerGlobalUiUpdate()
 	})
 
 	a.reverseShellSelect.Select(0, 0)
@@ -123,6 +121,7 @@ func (a *App) initReverseShellTableEvents() {
 // TODO: Maybe better names?
 func (a *App) bindEvents() {
 	a.initInputCapture()
+	a.initIpFieldEvents()
 	a.initPortFieldEvents()
 	a.initListenerTypeSelectEvents()
 	a.initTargetOsTypeSelectEvents()

@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"rvfs/data"
+
 	"github.com/rivo/tview"
 )
 
@@ -9,9 +11,11 @@ func (a *App) buildHeader() tview.Primitive {
 		SetRows(0).
 		SetColumns(0, 4, 0)
 
+	// TODO: Later have the option to get this from cmdline and use placeholder.
 	a.ipField = tview.NewInputField().
 		SetLabel("IP: ").
-		SetPlaceholder("10.10.10.10")
+		SetText("10.10.10.10")
+		// SetPlaceholder("10.10.10.10")
 	a.registerFocusable(a.ipField)
 
 	a.portField = tview.NewInputField().
@@ -72,6 +76,7 @@ func (a *App) buildTabs() *tview.Flex {
 		a.registerFocusable(v)
 	}
 
+	// XXX: Disabling these for now. Will implement l8r.
 	tabsFlex := tview.NewFlex().
 		AddItem(reverseTab, 0, 1, true).
 		AddItem(Spacer(), 1, 0, false).
@@ -87,7 +92,7 @@ func (a *App) buildTabs() *tview.Flex {
 
 func (a *App) buildMainContent() *tview.Flex {
 	mainContentFlex := tview.NewFlex().SetDirection(tview.FlexRow)
-	tabs := a.buildTabs()
+	// tabs := a.buildTabs()
 
 	a.targetOsTypeSelect = tview.NewDropDown().SetLabel("OS: ")
 	a.registerFocusable(a.targetOsTypeSelect)
@@ -108,15 +113,48 @@ func (a *App) buildMainContent() *tview.Flex {
 
 	a.reverseShellCommandDisplay = tview.NewTextView()
 
-	mainContentData := tview.NewFlex().
-		AddItem(a.reverseShellSelect, 0, 1, true).
-		AddItem(a.reverseShellCommandDisplay, 0, 4, false)
+	mainContentData := tview.NewGrid().
+		SetRows(0).
+		SetColumns(25, 0)
 
-	mainContentFlex.AddItem(tabs, 1, 0, true).
-		AddItem(Spacer(), 1, 0, false).
-		AddItem(mainContentControls, 1, 0, true).
-		AddItem(Spacer(), 1, 0, false).
-		AddItem(mainContentData, 0, 1, true)
+	// TODO: Refactor this part.
+	shellSelect := tview.NewDropDown().
+		SetLabel("Shell: ").
+		SetOptions(data.ShellTypes, nil).
+		SetCurrentOption(2) // Bash by default
+	a.registerFocusable(shellSelect)
+
+	encodingSelect := tview.NewDropDown().
+		SetLabel("Encoding: ").
+		SetOptions([]string{"Will implement l8r"}, nil).
+		SetCurrentOption(0)
+
+	payloadCopyButton := tview.NewButton("Copy").
+		SetSelectedFunc(func() {
+			// TODO: Implement copy to clipboard.
+		})
+	a.registerFocusable(payloadCopyButton)
+
+	shellPayloadDisplayOptions := tview.NewFlex().
+		AddItem(shellSelect, 0, 1, true).
+		AddItem(encodingSelect, 0, 1, true).
+		AddItem(payloadCopyButton, 10, 0, true)
+
+	shellPayloadDisplayGrid := tview.NewGrid().
+		SetRows(0, 1).
+		SetColumns(0).
+		AddItem(a.reverseShellCommandDisplay, 0, 0, 1, 1, 0, 0, true).
+		AddItem(shellPayloadDisplayOptions, 1, 0, 1, 1, 0, 0, true)
+
+	mainContentData.AddItem(a.reverseShellSelect, 0, 0, 1, 1, 0, 0, true).
+		AddItem(shellPayloadDisplayGrid, 0, 1, 1, 1, 0, 0, true)
+
+	// FIXME:
+	mainContentFlex. // AddItem(tabs, 1, 0, true).
+				AddItem(Spacer(), 1, 0, false).
+				AddItem(mainContentControls, 1, 0, true).
+				AddItem(Spacer(), 1, 0, false).
+				AddItem(mainContentData, 0, 1, true)
 
 	return mainContentFlex
 }
