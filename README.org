@@ -1,6 +1,10 @@
 * Reverse from the Shell (rvfs)
 This is a TUI implementation of [[https://github.com/0dayCTF/reverse-shell-generator][0dayCTF's]] reverse shell generator.
 
+The TUI library used for this project is [[https://github.com/rivo/tview][tview]].
+
+I decided to work on this project because I wanted a quick and easy way to generate listeners and payloads when doing CTFs/HTB from the comfort of my Terminal environment.
+
 * ⚠️ Attention ⚠️
 I made this repo public when ~rvfs~ reached the minimal working version status.
 
@@ -17,16 +21,27 @@ go build -o bin/ ./cmd/rvfs/
 
 # Run
 ./bin/rvfs
+#+END_SRC
 
-# If you encounter color related problems, try this
-./bin/rvfs -color-fix
+** Color bug
+~tview~ uses [[https://github.com/gdamore/tcell][tcell]] under the hood. So, all the colors are managed by that library (afaik). ~tcell~ respects your terminal colors and theme, but some colors might be unreadable
+in the context of a ~tview~ application.
+
+If you encounter such colors, I implemented a temporary fix.
+
+You can use the following flag:
+
+#+BEGIN_SRC bash
+# Color fix
+rvfs -color-fix
 #+END_SRC
 
 * Usage
 - You can navigate (change focus) between the components using =tab= and =shift+tab=
 - Use =Enter= to interact with the buttons and dropdown menus
-- When focused on the payload table, you can go up and down using the arrow keys,
-or the =Vim= keys.
+- When focused on the payload table, you can go up and down using the arrow keys, or the =Vim= keys.
+
+This is how ~rvfs~ looks like with the default Kali theme/colors:
 
 #+CAPTION: Earliest working version of rvfs
 #+NAME: rvfs 0.1
@@ -35,8 +50,6 @@ or the =Vim= keys.
 * Current features
 - All listeners are available
 - All the reverse shell payloads (except P0wny Shell, which will be added later)) are available
-- ~rvfs~ utilizes [[https://github.com/golang-design/clipboard][design clipboard]],
-so you can use the =copy= buttons to copy the payloads to your clipboard
-    - If you press enter while your focus is on the shell table, it also copies
-    the payload to your clipboard
+- ~rvfs~ utilizes [[https://github.com/golang-design/clipboard][design clipboard]], so you can use the =copy= buttons to copy the payloads to your clipboard
+    - If you press enter while your focus is on the shell table, it also copies the payload to your clipboard
 
