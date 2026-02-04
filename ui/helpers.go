@@ -43,8 +43,12 @@ func (a *App) triggerGlobalUiUpdate() {
 		panic(err)
 	}
 
+	// Adding colors
+	shell = "[blue]" + shell + "[white]"
+	port = "[green]" + port + "[white]"
+	ip = "[yellow]" + ip + "[white]"
+
 	var buf bytes.Buffer
-	// TODO: I put bash here temporarily.
 	tmpl.Execute(&buf, map[string]string{"Shell": shell, "Port": port, "Ip": ip})
 
 	a.reverseShellCommandDisplay.SetText(buf.String())

@@ -117,7 +117,8 @@ func (a *App) buildMainContent() *tview.Flex {
 		SetSelectable(true, false)
 	a.registerFocusable(a.reverseShellSelect)
 
-	a.reverseShellCommandDisplay = tview.NewTextView()
+	a.reverseShellCommandDisplay = tview.NewTextView().
+		SetDynamicColors(true)
 
 	mainContentData := tview.NewGrid().
 		SetRows(0).
@@ -151,7 +152,7 @@ func (a *App) buildMainContent() *tview.Flex {
 	mainContentData.AddItem(a.reverseShellSelect, 0, 0, 1, 1, 0, 0, true).
 		AddItem(shellPayloadDisplayGrid, 0, 1, 1, 1, 0, 0, true)
 
-	// FIXME:
+	// FIXME: Temporarily removed the tabs
 	mainContentFlex. // AddItem(tabs, 1, 0, true).
 				AddItem(Spacer(), 1, 0, false).
 				AddItem(mainContentControls, 1, 0, true).
