@@ -124,6 +124,7 @@ func (a *App) buildMainContent() *tview.Flex {
 		SetRows(0).
 		SetColumns(25, 0)
 
+	// TODO: This section needs refactoring.
 	a.shellPayloadSelect = tview.NewDropDown().
 		SetLabel("Shell: ").
 		SetOptions(data.ShellTypes, nil).

@@ -3,7 +3,7 @@ package ui
 import (
 	"bytes"
 	"encoding/base64"
-	"html/template"
+	"text/template"
 
 	//	"regexp"
 	"rvfs/data"
@@ -49,7 +49,11 @@ func (a *App) triggerGlobalUiUpdate() {
 	ip = "[yellow]" + ip + "[white]"
 
 	var buf bytes.Buffer
-	tmpl.Execute(&buf, map[string]string{"Shell": shell, "Port": port, "Ip": ip})
+	err = tmpl.Execute(&buf, map[string]string{"Shell": shell, "Port": port, "Ip": ip})
+
+	if err != nil {
+		panic(err)
+	}
 
 	a.reverseShellCommandDisplay.SetText(buf.String())
 }
