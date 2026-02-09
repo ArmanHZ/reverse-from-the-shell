@@ -50,7 +50,7 @@ func (a *App) buildHeader() tview.Primitive {
 	a.registerFocusable(a.listenerTypeSelect)
 
 	a.listenerCopyButton = tview.NewButton("Copy")
-	a.registerFocusable(a.listenerCopyButton) // TODO: Need to make the button global as well.
+	a.registerFocusable(a.listenerCopyButton)
 
 	listenerFlex := tview.NewFlex().
 		AddItem(tview.NewTextView().SetText("Listener"), 1, 0, false).
@@ -68,6 +68,7 @@ func (a *App) buildHeader() tview.Primitive {
 	return headerGrid
 }
 
+// TODO: Function is not used. Will be used after implementing the other types of shells.
 func (a *App) buildTabs() *tview.Flex {
 	reverseTab := tview.NewButton("Reverse")
 	bindTab := tview.NewButton("Bind")
@@ -80,7 +81,6 @@ func (a *App) buildTabs() *tview.Flex {
 		a.registerFocusable(v)
 	}
 
-	// XXX: Disabling these for now. Will implement l8r.
 	tabsFlex := tview.NewFlex().
 		AddItem(reverseTab, 0, 1, true).
 		AddItem(Spacer(), 1, 0, false).
@@ -92,6 +92,35 @@ func (a *App) buildTabs() *tview.Flex {
 		AddItem(Spacer(), 0, 3, false)
 
 	return tabsFlex
+}
+
+func (a *App) buildShellPayloadDisplay() *tview.Grid {
+	a.shellTypeSelect = tview.NewDropDown().
+		SetLabel("Shell: ").
+		SetOptions(data.ShellTypes, nil).
+		SetCurrentOption(2) // Bash by default
+	a.registerFocusable(a.shellTypeSelect)
+
+	encodingSelect := tview.NewDropDown().
+		SetLabel("Encoding: ").
+		SetOptions([]string{"Will implement l8r"}, nil).
+		SetCurrentOption(0)
+
+	a.shellPayloadCopyButton = tview.NewButton("Copy")
+	a.registerFocusable(a.shellPayloadCopyButton)
+
+	shellPayloadDisplayOptions := tview.NewFlex().
+		AddItem(a.shellTypeSelect, 0, 1, true).
+		AddItem(encodingSelect, 0, 1, true).
+		AddItem(a.shellPayloadCopyButton, 10, 0, true)
+
+	shellPayloadDisplayGrid := tview.NewGrid().
+		SetRows(0, 1).
+		SetColumns(0).
+		AddItem(a.shellPayloadDisplay, 0, 0, 1, 1, 0, 0, true).
+		AddItem(shellPayloadDisplayOptions, 1, 0, 1, 1, 0, 0, true)
+
+	return shellPayloadDisplayGrid
 }
 
 func (a *App) buildMainContent() *tview.Flex {
@@ -124,31 +153,7 @@ func (a *App) buildMainContent() *tview.Flex {
 		SetRows(0).
 		SetColumns(25, 0)
 
-	// TODO: This section needs refactoring.
-	a.shellTypeSelect = tview.NewDropDown().
-		SetLabel("Shell: ").
-		SetOptions(data.ShellTypes, nil).
-		SetCurrentOption(2) // Bash by default
-	a.registerFocusable(a.shellTypeSelect)
-
-	encodingSelect := tview.NewDropDown().
-		SetLabel("Encoding: ").
-		SetOptions([]string{"Will implement l8r"}, nil).
-		SetCurrentOption(0)
-
-	a.shellPayloadCopyButton = tview.NewButton("Copy")
-	a.registerFocusable(a.shellPayloadCopyButton)
-
-	shellPayloadDisplayOptions := tview.NewFlex().
-		AddItem(a.shellTypeSelect, 0, 1, true).
-		AddItem(encodingSelect, 0, 1, true).
-		AddItem(a.shellPayloadCopyButton, 10, 0, true)
-
-	shellPayloadDisplayGrid := tview.NewGrid().
-		SetRows(0, 1).
-		SetColumns(0).
-		AddItem(a.shellPayloadDisplay, 0, 0, 1, 1, 0, 0, true).
-		AddItem(shellPayloadDisplayOptions, 1, 0, 1, 1, 0, 0, true)
+	shellPayloadDisplayGrid := a.buildShellPayloadDisplay()
 
 	mainContentData.AddItem(a.shellCommandTable, 0, 0, 1, 1, 0, 0, true).
 		AddItem(shellPayloadDisplayGrid, 0, 1, 1, 1, 0, 0, true)

@@ -20,7 +20,7 @@ type App struct {
 	ipField            *tview.InputField
 	portField          *tview.InputField
 	listenerCommand    *tview.TextView
-	listenerTypeSelect *tview.DropDown // FIXME: I don't like this name.
+	listenerTypeSelect *tview.DropDown
 	listenerCopyButton *tview.Button
 
 	// Main content widgets
@@ -61,7 +61,7 @@ var darkModeColorFix = tview.Theme{
 	ContrastSecondaryTextColor:  tcell.ColorDarkGray,
 }
 
-func New(isColorFix bool) *App {
+func New(isColorFix bool, userIp string) *App {
 	if isColorFix {
 		tview.Styles = darkModeColorFix
 	}
@@ -73,6 +73,12 @@ func New(isColorFix bool) *App {
 	a.buildUI()
 	a.bindEvents()
 	a.initInputCapture()
+
+	// TODO: Idk if setting up the cmdline variables here is good practice.
+	// but also don't want to complicate things with passing variables around.
+	if userIp != "" {
+		a.ipField.SetText(userIp)
+	}
 
 	a.app.SetFocus(a.focusables[0])
 
