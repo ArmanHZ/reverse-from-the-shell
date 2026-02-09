@@ -1,12 +1,8 @@
 package ui
 
 import (
-	"bytes"
-	"encoding/base64"
-	"text/template"
 
 	//	"regexp"
-	"rvfs/data"
 
 	"github.com/rivo/tview"
 	"golang.design/x/clipboard"
@@ -25,39 +21,6 @@ func (a *App) registerFocusable(p tview.Primitive) {
 	a.focusables = append(a.focusables, p)
 }
 
-// XXX: This function may need to be put in the `events.go` file.
-func (a *App) triggerGlobalUiUpdate() {
-	ip := a.ipField.GetText()
-	port := a.portField.GetText()
-	_, shell := a.shellPayloadSelect.GetCurrentOption()
-
-	payload := data.ReverseShellCommands[a.payloadTableRow].Command
-
-	sDec, err := base64.StdEncoding.DecodeString(payload)
-	if err != nil {
-		panic(err)
-	}
-
-	tmpl, err := template.New("").Parse(string(sDec))
-	if err != nil {
-		panic(err)
-	}
-
-	// Adding colors
-	shell = "[blue]" + shell + "[white]"
-	port = "[green]" + port + "[white]"
-	ip = "[yellow]" + ip + "[white]"
-
-	var buf bytes.Buffer
-	err = tmpl.Execute(&buf, map[string]string{"Shell": shell, "Port": port, "Ip": ip})
-
-	if err != nil {
-		panic(err)
-	}
-
-	a.reverseShellCommandDisplay.SetText(buf.String())
-}
-
 // TODO: Maybe use something other than index. Enums maybe, idk.
 func (a *App) CopyToClipBoard(index int) {
 	a.clipboardError = clipboard.Init()
@@ -70,6 +33,6 @@ func (a *App) CopyToClipBoard(index int) {
 		clipboard.Write(clipboard.FmtText, []byte(a.listenerCommand.GetText(true)))
 
 	case 1: // Payload copy button
-		clipboard.Write(clipboard.FmtText, []byte(a.reverseShellCommandDisplay.GetText(true)))
+		clipboard.Write(clipboard.FmtText, []byte(a.shellPayloadDisplay.GetText(true)))
 	}
 }

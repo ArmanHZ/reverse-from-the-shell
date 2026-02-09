@@ -112,12 +112,12 @@ func (a *App) buildMainContent() *tview.Flex {
 		AddItem(payloadSearchField, 0, 4, true).
 		AddItem(Spacer(), 0, 5, false)
 
-	a.reverseShellSelect = tview.NewTable().
+	a.shellCommandTable = tview.NewTable().
 		SetBorders(true).
 		SetSelectable(true, false)
-	a.registerFocusable(a.reverseShellSelect)
+	a.registerFocusable(a.shellCommandTable)
 
-	a.reverseShellCommandDisplay = tview.NewTextView().
+	a.shellPayloadDisplay = tview.NewTextView().
 		SetDynamicColors(true)
 
 	mainContentData := tview.NewGrid().
@@ -125,32 +125,32 @@ func (a *App) buildMainContent() *tview.Flex {
 		SetColumns(25, 0)
 
 	// TODO: This section needs refactoring.
-	a.shellPayloadSelect = tview.NewDropDown().
+	a.shellTypeSelect = tview.NewDropDown().
 		SetLabel("Shell: ").
 		SetOptions(data.ShellTypes, nil).
 		SetCurrentOption(2) // Bash by default
-	a.registerFocusable(a.shellPayloadSelect)
+	a.registerFocusable(a.shellTypeSelect)
 
 	encodingSelect := tview.NewDropDown().
 		SetLabel("Encoding: ").
 		SetOptions([]string{"Will implement l8r"}, nil).
 		SetCurrentOption(0)
 
-	a.payloadCopyButton = tview.NewButton("Copy")
-	a.registerFocusable(a.payloadCopyButton)
+	a.shellPayloadCopyButton = tview.NewButton("Copy")
+	a.registerFocusable(a.shellPayloadCopyButton)
 
 	shellPayloadDisplayOptions := tview.NewFlex().
-		AddItem(a.shellPayloadSelect, 0, 1, true).
+		AddItem(a.shellTypeSelect, 0, 1, true).
 		AddItem(encodingSelect, 0, 1, true).
-		AddItem(a.payloadCopyButton, 10, 0, true)
+		AddItem(a.shellPayloadCopyButton, 10, 0, true)
 
 	shellPayloadDisplayGrid := tview.NewGrid().
 		SetRows(0, 1).
 		SetColumns(0).
-		AddItem(a.reverseShellCommandDisplay, 0, 0, 1, 1, 0, 0, true).
+		AddItem(a.shellPayloadDisplay, 0, 0, 1, 1, 0, 0, true).
 		AddItem(shellPayloadDisplayOptions, 1, 0, 1, 1, 0, 0, true)
 
-	mainContentData.AddItem(a.reverseShellSelect, 0, 0, 1, 1, 0, 0, true).
+	mainContentData.AddItem(a.shellCommandTable, 0, 0, 1, 1, 0, 0, true).
 		AddItem(shellPayloadDisplayGrid, 0, 1, 1, 1, 0, 0, true)
 
 	// FIXME: Temporarily removed the tabs

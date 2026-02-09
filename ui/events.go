@@ -2,6 +2,7 @@ package ui
 
 import (
 	"bytes"
+	"encoding/base64"
 	"html/template"
 	"rvfs/data"
 	"strings"
@@ -50,13 +51,44 @@ func (a *App) initInputCapture() {
 	})
 }
 
+func (a *App) triggerGlobalUiUpdate() {
+	ip := a.ipField.GetText()
+	port := a.portField.GetText()
+	_, shell := a.shellTypeSelect.GetCurrentOption()
+
+	payload := data.ReverseShellCommands[a.payloadTableRow].Command
+
+	sDec, err := base64.StdEncoding.DecodeString(payload)
+	if err != nil {
+		panic(err)
+	}
+
+	tmpl, err := template.New("").Parse(string(sDec))
+	if err != nil {
+		panic(err)
+	}
+
+	// Adding colors
+	shell = "[blue]" + shell + "[white]"
+	port = "[green]" + port + "[white]"
+	ip = "[yellow]" + ip + "[white]"
+
+	var buf bytes.Buffer
+	err = tmpl.Execute(&buf, map[string]string{"Shell": shell, "Port": port, "Ip": ip})
+
+	if err != nil {
+		panic(err)
+	}
+
+	a.shellPayloadDisplay.SetText(buf.String())
+}
+
 func (a *App) initIpFieldEvents() {
 	a.ipField.SetChangedFunc(func(text string) {
 		a.triggerGlobalUiUpdate()
 	})
 }
 
-// FIXME: Table content also needs to change.
 func (a *App) initPortFieldEvents() {
 	a.portField.SetChangedFunc(func(text string) {
 		// FIXME: Clean this up and rename the variables.
@@ -96,8 +128,6 @@ func (a *App) initTargetOsTypeSelectEvents() {
 		SetCurrentOption(0)
 }
 
-// FIXME: When the user changes IP and/or Port, the change does not reflect
-// onto the table until you interract with the table again.
 // FIXME: This name disregards other payload types.
 func (a *App) initReverseShellTableEvents() {
 	// XXX: Should I do this part in this file? Who knows...
@@ -105,21 +135,21 @@ func (a *App) initReverseShellTableEvents() {
 		cell := tview.NewTableCell(text.Name).
 			SetAlign(tview.AlignLeft)
 
-		a.reverseShellSelect.SetCell(row, 0, cell)
+		a.shellCommandTable.SetCell(row, 0, cell)
 	}
 
-	a.reverseShellSelect.SetSelectionChangedFunc(func(row, column int) {
+	a.shellCommandTable.SetSelectionChangedFunc(func(row, column int) {
 		a.payloadTableRow = row
 		a.payloadTableColumn = 0
 
 		a.triggerGlobalUiUpdate()
 	})
 
-	a.reverseShellSelect.Select(0, 0)
+	a.shellCommandTable.Select(0, 0)
 }
 
 func (a *App) initShellPayloadSelectEvents() {
-	a.shellPayloadSelect.SetSelectedFunc(func(text string, index int) {
+	a.shellTypeSelect.SetSelectedFunc(func(text string, index int) {
 		a.triggerGlobalUiUpdate()
 	})
 }
@@ -129,11 +159,11 @@ func (a *App) initClipboardEvents() {
 		a.CopyToClipBoard(0)
 	})
 
-	a.reverseShellSelect.SetSelectedFunc(func(row, column int) {
+	a.shellCommandTable.SetSelectedFunc(func(row, column int) {
 		a.CopyToClipBoard(1)
 	})
 
-	a.payloadCopyButton.SetSelectedFunc(func() {
+	a.shellPayloadCopyButton.SetSelectedFunc(func() {
 		a.CopyToClipBoard(1)
 	})
 }

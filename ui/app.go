@@ -24,12 +24,11 @@ type App struct {
 	listenerCopyButton *tview.Button
 
 	// Main content widgets
-	// TODO: Remove the "reverse" from the names. Other types of shells are not covered by this naming.
-	targetOsTypeSelect         *tview.DropDown
-	reverseShellSelect         *tview.Table
-	reverseShellCommandDisplay *tview.TextView
-	shellPayloadSelect         *tview.DropDown
-	payloadCopyButton          *tview.Button
+	targetOsTypeSelect     *tview.DropDown
+	shellCommandTable      *tview.Table
+	shellPayloadDisplay    *tview.TextView
+	shellTypeSelect        *tview.DropDown
+	shellPayloadCopyButton *tview.Button
 
 	// Tab buttons
 	// TODO: Maybe do something like an enum
