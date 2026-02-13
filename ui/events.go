@@ -69,10 +69,13 @@ func (a *App) triggerGlobalUiUpdate() {
 		panic(err)
 	}
 
-	// Adding colors
-	// shell = "[blue]" + shell + "[white]"
-	// port = "[green]" + port + "[white]"
-	// ip = "[yellow]" + ip + "[white]"
+	var _, currentEncodingType = a.encodingTypeSelect.GetCurrentOption()
+	if currentEncodingType == "None" {
+		// Adding colors
+		shell = "[blue]" + shell + "[white]"
+		port = "[green]" + port + "[white]"
+		ip = "[yellow]" + ip + "[white]"
+	}
 
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, map[string]string{"Shell": shell, "Port": port, "Ip": ip})
@@ -82,14 +85,18 @@ func (a *App) triggerGlobalUiUpdate() {
 		panic(err)
 	}
 
-	var _, currentEncodingType = a.encodingTypeSelect.GetCurrentOption()
+	// FIXME: Base64 url safe removes important characters like ">"...
 	switch currentEncodingType {
 	case "Base64":
 		bufferAsString = base64.StdEncoding.EncodeToString([]byte(bufferAsString))
+	case "Base64UrlSafe":
+		bufferAsString = base64.URLEncoding.EncodeToString([]byte(bufferAsString))
 	case "UrlEncoding":
 		bufferAsString = url.QueryEscape(bufferAsString)
 	case "UrlAndBase64":
 		bufferAsString = base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(bufferAsString)))
+	case "UrlAndBase64UrlSafe":
+		bufferAsString = base64.URLEncoding.EncodeToString([]byte(url.QueryEscape(bufferAsString)))
 	}
 
 	a.shellPayloadDisplay.SetText(bufferAsString)

@@ -8,8 +8,10 @@ type Listener struct {
 var EncodingTypes = []string{
 	"None",
 	"Base64",
+	"Base64UrlSafe",
 	"UrlEncoding",
 	"UrlAndBase64",
+	"UrlAndBase64UrlSafe",
 }
 
 type ReverseShellCommand struct {
