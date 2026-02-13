@@ -5,6 +5,13 @@ type Listener struct {
 	Payload string
 }
 
+var EncodingTypes = []string{
+	"None",
+	"Base64",
+	"UrlEncoding",
+	"UrlAndBase64",
+}
+
 type ReverseShellCommand struct {
 	Name    string
 	Command string

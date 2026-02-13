@@ -12,11 +12,10 @@ func (a *App) buildHeader() tview.Primitive {
 		SetRows(0).
 		SetColumns(0, 4, 0)
 
-	// TODO: Later have the option to get this from cmdline and use placeholder.
 	a.ipField = tview.NewInputField().
 		SetLabel("IP: ").
 		SetText("10.10.10.10").
-		// Temporary solution for letters. Will use regex later.
+		// TODO: Temporary solution for letters. Will use regex later.
 		SetAcceptanceFunc(func(textToCheck string, lastChar rune) bool {
 			if unicode.IsDigit(lastChar) || unicode.IsPunct(lastChar) {
 				return true
@@ -101,17 +100,20 @@ func (a *App) buildShellPayloadDisplay() *tview.Grid {
 		SetCurrentOption(2) // Bash by default
 	a.registerFocusable(a.shellTypeSelect)
 
-	encodingSelect := tview.NewDropDown().
+	a.encodingTypeSelect = tview.NewDropDown().
 		SetLabel("Encoding: ").
-		SetOptions([]string{"Will implement l8r"}, nil).
-		SetCurrentOption(0)
+		SetOptions(data.EncodingTypes, nil).
+		SetCurrentOption(0).
+		// FIX: Setting this in the events function might be better.
+		SetSelectedFunc(func(text string, index int) { a.triggerGlobalUiUpdate() })
+	a.registerFocusable(a.encodingTypeSelect)
 
 	a.shellPayloadCopyButton = tview.NewButton("Copy")
 	a.registerFocusable(a.shellPayloadCopyButton)
 
 	shellPayloadDisplayOptions := tview.NewFlex().
 		AddItem(a.shellTypeSelect, 0, 1, true).
-		AddItem(encodingSelect, 0, 1, true).
+		AddItem(a.encodingTypeSelect, 0, 1, true).
 		AddItem(a.shellPayloadCopyButton, 10, 0, true)
 
 	shellPayloadDisplayGrid := tview.NewGrid().
@@ -128,7 +130,7 @@ func (a *App) buildMainContent() *tview.Flex {
 	// tabs := a.buildTabs()
 
 	a.targetOsTypeSelect = tview.NewDropDown().SetLabel("OS: ")
-	a.registerFocusable(a.targetOsTypeSelect)
+	// a.registerFocusable(a.targetOsTypeSelect) // TODO: Will enable later.
 
 	payloadSearchField := tview.NewInputField().SetLabel("Name: ")
 	payloadSearchField.SetPlaceholder("Will be implemented later...")
@@ -142,8 +144,7 @@ func (a *App) buildMainContent() *tview.Flex {
 		AddItem(Spacer(), 0, 5, false)
 
 	a.shellCommandTable = tview.NewTable().
-		SetBorders(true).
-		SetSelectable(true, false)
+		SetBorders(true)
 	a.registerFocusable(a.shellCommandTable)
 
 	a.shellPayloadDisplay = tview.NewTextView().

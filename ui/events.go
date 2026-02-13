@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"html/template"
+	"net/url"
 	"rvfs/data"
 	"strings"
 
@@ -69,18 +70,29 @@ func (a *App) triggerGlobalUiUpdate() {
 	}
 
 	// Adding colors
-	shell = "[blue]" + shell + "[white]"
-	port = "[green]" + port + "[white]"
-	ip = "[yellow]" + ip + "[white]"
+	// shell = "[blue]" + shell + "[white]"
+	// port = "[green]" + port + "[white]"
+	// ip = "[yellow]" + ip + "[white]"
 
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, map[string]string{"Shell": shell, "Port": port, "Ip": ip})
+	var bufferAsString string = buf.String()
 
 	if err != nil {
 		panic(err)
 	}
 
-	a.shellPayloadDisplay.SetText(buf.String())
+	var _, currentEncodingType = a.encodingTypeSelect.GetCurrentOption()
+	switch currentEncodingType {
+	case "Base64":
+		bufferAsString = base64.StdEncoding.EncodeToString([]byte(bufferAsString))
+	case "UrlEncoding":
+		bufferAsString = url.QueryEscape(bufferAsString)
+	case "UrlAndBase64":
+		bufferAsString = base64.StdEncoding.EncodeToString([]byte(url.QueryEscape(bufferAsString)))
+	}
+
+	a.shellPayloadDisplay.SetText(bufferAsString)
 }
 
 func (a *App) initIpFieldEvents() {
@@ -137,6 +149,14 @@ func (a *App) initReverseShellTableEvents() {
 
 		a.shellCommandTable.SetCell(row, 0, cell)
 	}
+
+	a.shellCommandTable.SetBlurFunc(func() {
+		a.shellCommandTable.SetSelectable(false, false)
+	})
+
+	a.shellCommandTable.SetFocusFunc(func() {
+		a.shellCommandTable.SetSelectable(true, false)
+	})
 
 	a.shellCommandTable.SetSelectionChangedFunc(func(row, column int) {
 		a.payloadTableRow = row

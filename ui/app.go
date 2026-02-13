@@ -29,6 +29,7 @@ type App struct {
 	shellPayloadDisplay    *tview.TextView
 	shellTypeSelect        *tview.DropDown
 	shellPayloadCopyButton *tview.Button
+	encodingTypeSelect     *tview.DropDown
 
 	// Tab buttons
 	// TODO: Maybe do something like an enum
