@@ -52,6 +52,7 @@ func (a *App) initInputCapture() {
 	})
 }
 
+// TODO: Function too long. Needs refactoring.
 func (a *App) triggerGlobalUiUpdate() {
 	ip := a.ipField.GetText()
 	port := a.portField.GetText()

